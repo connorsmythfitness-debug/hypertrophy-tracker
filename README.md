@@ -42,11 +42,12 @@ npm run install-all
 # Set up environment
 cp .env.example .env
 
-# Run migrations
-npm run migrate
-
-# Start with Docker
+# Run with Docker
 npm run dev
+
+# Or run separately:
+npm run backend    # Terminal 1: http://localhost:5000
+npm run frontend   # Terminal 2: http://localhost:3000
 ```
 
 ## 📊 Key Features
@@ -58,15 +59,15 @@ npm run dev
 - **Auto-Volume Calculation**: Sets × Reps × Weight
 
 ### For Athletes
-- Quick workout logging
-- RIR (Reps in Reserve) tracking
-- Weekly summary
+- Quick workout logging (exercise, sets, reps, weight, RIR)
+- Weekly volume summary per muscle
+- Training compliance monitoring
 
 ### For Coaches
 - Multi-athlete dashboard
 - Team volume analysis
 - Mesocycle planning & tracking
-- Compliance monitoring
+- Alert-based compliance monitoring
 
 ## 📁 Project Structure
 
@@ -74,28 +75,119 @@ npm run dev
 hypertrophy-tracker/
 ├── backend/
 │   ├── src/
-│   │   ├── controllers/
-│   │   ├── routes/
+│   │   ├── controllers/analytics.js    # Threshold logic
+│   │   ├── routes/                     # API endpoints
 │   │   └── server.js
-│   ├── migrations/
+│   ├── migrations/001_init.sql         # Database schema
+│   ├── Dockerfile
 │   └── package.json
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   ├── pages/
+│   │   │   ├── VolumeChart.tsx
+│   │   │   ├── ThresholdAlert.tsx
+│   │   │   └── Navigation.tsx
+│   │   ├── pages/Dashboard.tsx
 │   │   └── App.tsx
+│   ├── public/index.html
+│   ├── Dockerfile
 │   └── package.json
 ├── docker-compose.yml
 ├── .env.example
-└── package.json
+└── README.md
 ```
+
+## 📊 API Endpoints
+
+### Athletes
+- `POST /api/athletes` - Create athlete
+- `GET /api/athletes/:id` - Get athlete profile
+- `GET /api/athletes/:id/volume` - Get weekly volume data
+
+### Workouts
+- `POST /api/workouts` - Log workout session
+- `GET /api/workouts/:athleteId/week` - Get weekly workouts
+- `PUT /api/workouts/:id` - Update workout
+
+### Mesocycles
+- `POST /api/mesocycles` - Create training block
+- `GET /api/mesocycles/:athleteId` - Get athlete mesocycles
+- `PUT /api/mesocycles/:id` - Update mesocycle
+
+### Analytics (Key Feature!)
+- `GET /api/analytics/:athleteId/volume-by-muscle` - Weekly volume per muscle
+- `GET /api/analytics/:athleteId/threshold-status` - Alert status vs 10-20 range ⭐
+- `GET /api/analytics/:athleteId/progression` - Progressive overload tracking
+
+## 🎯 Threshold Logic
+
+**Optimal Range: 10-20 working sets per muscle per week**
+
+Based on: Schoenfeld et al. (2017) - CS Performance Hypertrophy Guide (2025)
+
+- 🟡 **Below 10 sets**: Insufficient volume (warning)
+- 🟢 **10-20 sets**: Optimal range (success)
+- 🔴 **Above 20 sets**: Excessive volume (alert)
+
+System auto-calculates: **Volume = Sets × Reps × Weight**
 
 ## 📚 Based On
 
-- **CS Performance Hypertrophy Guide (2025)**
-- **Schoenfeld et al. (2017)**: 10-20 sets/muscle/week optimal
-- Evidence-based S&C principles
+- **CS Performance Hypertrophy Guide (2025)**: Evidence-based training systems
+- **Schoenfeld et al. (2017)**: 10-20 sets per muscle per week for hypertrophy
+- **Krieger (2010)**: Dose-response meta-analysis
+- **Morton et al. (2018)**: Protein and muscle growth
+
+## 🐳 Docker Deployment
+
+```bash
+# Start all services
+docker-compose up
+
+# Services:
+# - Backend API: http://localhost:5000
+# - Frontend: http://localhost:3000
+# - PostgreSQL: localhost:5432
+```
+
+## 📱 Mobile Usage
+
+App is fully responsive for on-gym use:
+- Quick workout logging on phones
+- Real-time threshold alerts
+- Weekly summary view
+- Easy navigation
+
+## 🚀 Production Deployment
+
+### Railway
+```bash
+railway link
+railway up
+```
+
+### Vercel (Frontend)
+```bash
+cd frontend
+vercel deploy
+```
+
+### Heroku (Backend)
+```bash
+heroku create
+git push heroku main
+```
 
 ## 📄 License
 
-MIT - Connor Smyth @ CS Performance
+MIT - Use freely for S&C coaching
+
+## 👤 Author
+
+**Connor Smyth** - CS Performance  
+📧 connor.smyth.fitness@gmail.com  
+🌐 csperformance.co.uk
+
+---
+
+**Built with ❤️ for strength coaches and athletes**
