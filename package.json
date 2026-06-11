@@ -1,0 +1,16 @@
+{
+  "name": "hypertrophy-tracker",
+  "version": "1.0.0",
+  "description": "S&C coaching tool for athlete training volume management",
+  "main": "backend/src/server.js",
+  "scripts": {
+    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "dev": "docker-compose up",
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm start",
+    "migrate": "cd backend && npm run migrate"
+  },
+  "keywords": ["hypertrophy", "training", "s&c", "coaching"],
+  "author": "Connor Smyth",
+  "license": "MIT"
+}
